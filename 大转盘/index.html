@@ -1,0 +1,126 @@
+<html>
+
+	<head>
+		<meta charset="UTF-8" />
+		<style type="text/css">
+			.imgbox {
+				position: relative;
+				width: 210px;
+				height: 210px;
+			}
+			
+			.bg1 {
+				width: 100%;
+				position: absolute;
+			}
+			
+			.zp1 {
+				width: 180px;
+				position: absolute;
+				left: 15px;
+				top: 15px;
+			}
+			
+			.zhizhen {
+				width: 80px;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
+			}
+		</style>
+		<script type='text/javascript' src='jquery-1.9.1.min.js'></script>
+		<script type='text/javascript' src='jQueryRotate.js'></script>
+	</head>
+
+	<body>
+		<div class="imgBox">
+			<img class="bg1" src='img/bacg.gif' />
+			<img class="zp1" src='img/bg.png' />
+			<img class="zhizhen" src='img/zhizhen.png' />
+		</div>
+	</body>
+	<script type="text/javascript">
+		//开局随意放置
+		var startDeg = Math.ceil(Math.random() * (360));
+		//console.log(startDeg);
+		$(".zp1").rotate(startDeg);
+
+		function num(num1, num2) {
+			//如谢谢参与顺时针30~90度，
+			//则 (360-30)~(360-90) 即  330~270   居中度数   300
+			var number1 = 360 - num1;
+			var number2 = 360 - num2;
+			var number3 = (number1 - number2) / 2;
+			//console.log(number1, number2, number3)
+			return number2 + number3
+		}
+
+		var adddeg = 50;
+
+		function rorat() {
+			var angle = 0;
+
+			var timer2 = setInterval(function() {
+				//100毫秒内，逐渐增加的度数减少，100毫秒内，总旋转的度数逐渐减少,则旋转速度降低
+				adddeg -= 1;
+				//逐渐增加度数减到30，停止计时器
+				if(adddeg < 30) {
+					window.clearInterval(timer);
+					window.clearInterval(timer2);
+
+					//计算要转到哪里,已旋转度数 + 要旋转度数 
+					//var adddegnum = num(210, 270, "add");
+					
+					//随机停留
+					var nnn = Math.random() * 5;
+					var stop1 = Math.round(nnn) * 60 - 30;
+					var stop2 = stop1 + 60;
+					//console.log(nnn);
+					//console.log(Math.round(nnn));
+					//console.log(stop1, stop2);
+					var adddegnum = num(stop1, stop2, "add");
+
+					$(".zp1").rotate({
+						//angle目前已经旋转的度数
+						//angle % 360，目前角度到0度，距离的 角度大小
+						//360 - (angle % 360) 还要旋转多少度，回到角度0度
+						//angle + (360 - (angle % 360))  目前角度加上还要旋转度数，完整的360度倍数
+						//angle + 360 - (angle % 360) + adddegnum1   完整的360度倍数，角度到0度后，还要旋转adddegnum1，才到指定度数
+						animateTo: angle + (360 - (angle % 360)) + adddegnum,
+						duration: 3000
+					});
+					//$(".zp1").rotate(0);
+				}
+				if(adddeg < 0) {
+					window.clearInterval(timer);
+					window.clearInterval(timer2);
+				};
+			}, 100);
+			var rotate = function() {
+				angle = angle + adddeg;
+				//console.log(angle, angle % 360, adddeg);
+				if(adddeg <= 30) {
+					setTimeout(function() {
+						adddeg = 50;
+					}, 3000)
+				}
+				$(".zp1").rotate({
+					animateTo: angle,
+					duration: 100
+				});
+			};
+			var timer = setInterval(rotate, 50);
+		};
+
+		$(".zhizhen").click(function() {
+			if(adddeg === 50) {
+				console.log("开始");
+				rorat();
+			} else {
+				console.log(adddeg);
+			}
+		});
+	</script>
+
+</html>
